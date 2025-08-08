@@ -1,0 +1,197 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1BFDD5C1-57C1-46D5-8C48-6E2EFB70AD31}|Task\\Sineva.VHL.Task\\Sineva.VHL.Task.csproj|d:\\project\\demo\\vhl\\source\\vehicle 4.0\\vhl4.0_demo_20250808_0830\\sineva.vhl\\task\\sineva.vhl.task\\taskupdatemotiondata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1BFDD5C1-57C1-46D5-8C48-6E2EFB70AD31}|Task\\Sineva.VHL.Task\\Sineva.VHL.Task.csproj|solutionrelative:task\\sineva.vhl.task\\taskupdatemotiondata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BFDD5C1-57C1-46D5-8C48-6E2EFB70AD31}|Task\\Sineva.VHL.Task\\Sineva.VHL.Task.csproj|d:\\project\\demo\\vhl\\source\\vehicle 4.0\\vhl4.0_demo_20250808_0830\\sineva.vhl\\task\\sineva.vhl.task\\taskinterlockhighspeed.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1BFDD5C1-57C1-46D5-8C48-6E2EFB70AD31}|Task\\Sineva.VHL.Task\\Sineva.VHL.Task.csproj|solutionrelative:task\\sineva.vhl.task\\taskinterlockhighspeed.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{88ED1868-33AD-4314-BCAD-1FF8E5B41DA7}|Device\\Sineva.VHL.Device\\Sineva.VHL.Device.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\device\\sineva.vhl.device\\unit\\devtransfer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{88ED1868-33AD-4314-BCAD-1FF8E5B41DA7}|Device\\Sineva.VHL.Device\\Sineva.VHL.Device.csproj|solutionrelative:device\\sineva.vhl.device\\unit\\devtransfer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BFDD5C1-57C1-46D5-8C48-6E2EFB70AD31}|Task\\Sineva.VHL.Task\\Sineva.VHL.Task.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\task\\sineva.vhl.task\\taskfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1BFDD5C1-57C1-46D5-8C48-6E2EFB70AD31}|Task\\Sineva.VHL.Task\\Sineva.VHL.Task.csproj|solutionrelative:task\\sineva.vhl.task\\taskfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A64C19D4-F32C-4E7B-BAE6-27E68413797C}|Library\\Sineva.VHL.Library.MXP\\Sineva.VHL.Library.MXP.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\library\\sineva.vhl.library.mxp\\mxpaxis.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A64C19D4-F32C-4E7B-BAE6-27E68413797C}|Library\\Sineva.VHL.Library.MXP\\Sineva.VHL.Library.MXP.csproj|solutionrelative:library\\sineva.vhl.library.mxp\\mxpaxis.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3813AD0E-9860-4C7E-8307-2DF8B801008C}|Data\\Sineva.VHL.Data.Process\\Sineva.VHL.Data.Process.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\data\\sineva.vhl.data.process\\transfercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3813AD0E-9860-4C7E-8307-2DF8B801008C}|Data\\Sineva.VHL.Data.Process\\Sineva.VHL.Data.Process.csproj|solutionrelative:data\\sineva.vhl.data.process\\transfercommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{88ED1868-33AD-4314-BCAD-1FF8E5B41DA7}|Device\\Sineva.VHL.Device\\Sineva.VHL.Device.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\device\\sineva.vhl.device\\design\\viewservocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{88ED1868-33AD-4314-BCAD-1FF8E5B41DA7}|Device\\Sineva.VHL.Device\\Sineva.VHL.Device.csproj|solutionrelative:device\\sineva.vhl.device\\design\\viewservocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5B9D83B-AFE1-405D-A326-6191E40AD690}|Library\\Sineva.VHL.Library.Servo\\Sineva.VHL.Library.Servo.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\library\\sineva.vhl.library.servo\\taskservocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F5B9D83B-AFE1-405D-A326-6191E40AD690}|Library\\Sineva.VHL.Library.Servo\\Sineva.VHL.Library.Servo.csproj|solutionrelative:library\\sineva.vhl.library.servo\\taskservocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F5B9D83B-AFE1-405D-A326-6191E40AD690}|Library\\Sineva.VHL.Library.Servo\\Sineva.VHL.Library.Servo.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\library\\sineva.vhl.library.servo\\motionsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F5B9D83B-AFE1-405D-A326-6191E40AD690}|Library\\Sineva.VHL.Library.Servo\\Sineva.VHL.Library.Servo.csproj|solutionrelative:library\\sineva.vhl.library.servo\\motionsensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D89E60FB-6C6E-4AA4-AA49-8CDC9DD7F72F}|GUI\\Sineva.VHL.GUI\\Sineva.VHL.GUI.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\gui\\sineva.vhl.gui\\usercontrol\\ucocscommunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D89E60FB-6C6E-4AA4-AA49-8CDC9DD7F72F}|GUI\\Sineva.VHL.GUI\\Sineva.VHL.GUI.csproj|solutionrelative:gui\\sineva.vhl.gui\\usercontrol\\ucocscommunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D89E60FB-6C6E-4AA4-AA49-8CDC9DD7F72F}|GUI\\Sineva.VHL.GUI\\Sineva.VHL.GUI.csproj|D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\gui\\sineva.vhl.gui\\usercontrol\\ucocscommunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{D89E60FB-6C6E-4AA4-AA49-8CDC9DD7F72F}|GUI\\Sineva.VHL.GUI\\Sineva.VHL.GUI.csproj|solutionrelative:gui\\sineva.vhl.gui\\usercontrol\\ucocscommunication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 225,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TaskUpdateMotionData.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Task\\Sineva.VHL.Task\\TaskUpdateMotionData.cs",
+              "RelativeDocumentMoniker": "Task\\Sineva.VHL.Task\\TaskUpdateMotionData.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Task\\Sineva.VHL.Task\\TaskUpdateMotionData.cs",
+              "RelativeToolTip": "Task\\Sineva.VHL.Task\\TaskUpdateMotionData.cs",
+              "ViewState": "AgIAAE8AAAAAAAAAAAAawGcAAACTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T01:44:08.085Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TaskInterlockHighSpeed.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Task\\Sineva.VHL.Task\\TaskInterlockHighSpeed.cs",
+              "RelativeDocumentMoniker": "Task\\Sineva.VHL.Task\\TaskInterlockHighSpeed.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Task\\Sineva.VHL.Task\\TaskInterlockHighSpeed.cs",
+              "RelativeToolTip": "Task\\Sineva.VHL.Task\\TaskInterlockHighSpeed.cs",
+              "ViewState": "AgIAAAIFAAAAAAAAAAAqwCIFAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-06T10:18:47.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MotionSensor.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Library\\Sineva.VHL.Library.Servo\\MotionSensor.cs",
+              "RelativeDocumentMoniker": "Library\\Sineva.VHL.Library.Servo\\MotionSensor.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Library\\Sineva.VHL.Library.Servo\\MotionSensor.cs",
+              "RelativeToolTip": "Library\\Sineva.VHL.Library.Servo\\MotionSensor.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAowCUAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T07:57:22.655Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ucOcsCommunication.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs",
+              "RelativeDocumentMoniker": "GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs",
+              "RelativeToolTip": "GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs",
+              "ViewState": "AgIAAJkBAAAAAAAAAAAAwLYBAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T07:53:54.936Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ucOcsCommunication.cs [\uB514\uC790\uC778]",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs",
+              "RelativeDocumentMoniker": "GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250804_1100\\Sineva.VHL\\GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs [\uB514\uC790\uC778]",
+              "RelativeToolTip": "..\\..\\VHL4.0_Demo_20250804_1100\\Sineva.VHL\\GUI\\Sineva.VHL.GUI\\UserControl\\ucOcsCommunication.cs [\uB514\uC790\uC778]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T07:53:48.929Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TaskFunction.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Task\\Sineva.VHL.Task\\TaskFunction.cs",
+              "RelativeDocumentMoniker": "Task\\Sineva.VHL.Task\\TaskFunction.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Task\\Sineva.VHL.Task\\TaskFunction.cs",
+              "RelativeToolTip": "Task\\Sineva.VHL.Task\\TaskFunction.cs",
+              "ViewState": "AgIAACUWAAAAAAAAAAAAwA8WAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T05:47:27.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TaskServoControl.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Library\\Sineva.VHL.Library.Servo\\TaskServoControl.cs",
+              "RelativeDocumentMoniker": "Library\\Sineva.VHL.Library.Servo\\TaskServoControl.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Library\\Sineva.VHL.Library.Servo\\TaskServoControl.cs",
+              "RelativeToolTip": "Library\\Sineva.VHL.Library.Servo\\TaskServoControl.cs",
+              "ViewState": "AgIAAAYBAAAAAAAAAAAIwBEBAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T05:41:15.534Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "viewServoControl.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Device\\Sineva.VHL.Device\\Design\\viewServoControl.cs",
+              "RelativeDocumentMoniker": "Device\\Sineva.VHL.Device\\Design\\viewServoControl.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Device\\Sineva.VHL.Device\\Design\\viewServoControl.cs",
+              "RelativeToolTip": "Device\\Sineva.VHL.Device\\Design\\viewServoControl.cs",
+              "ViewState": "AgIAAG8DAAAAAAAAAAAuwJIDAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T03:00:15.765Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MxpAxis.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Library\\Sineva.VHL.Library.MXP\\MxpAxis.cs",
+              "RelativeDocumentMoniker": "Library\\Sineva.VHL.Library.MXP\\MxpAxis.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Library\\Sineva.VHL.Library.MXP\\MxpAxis.cs",
+              "RelativeToolTip": "Library\\Sineva.VHL.Library.MXP\\MxpAxis.cs",
+              "ViewState": "AgIAAJEIAAAAAAAAAAAgwKMIAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T02:46:04.478Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DevTransfer.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Device\\Sineva.VHL.Device\\Unit\\DevTransfer.cs",
+              "RelativeDocumentMoniker": "Device\\Sineva.VHL.Device\\Unit\\DevTransfer.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Device\\Sineva.VHL.Device\\Unit\\DevTransfer.cs",
+              "RelativeToolTip": "Device\\Sineva.VHL.Device\\Unit\\DevTransfer.cs",
+              "ViewState": "AgIAAKAGAAAAAAAAAAAAwLUGAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T03:24:02.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "TransferCommand.cs",
+              "DocumentMoniker": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Data\\Sineva.VHL.Data.Process\\TransferCommand.cs",
+              "RelativeDocumentMoniker": "Data\\Sineva.VHL.Data.Process\\TransferCommand.cs",
+              "ToolTip": "D:\\Project\\Demo\\VHL\\Source\\Vehicle 4.0\\VHL4.0_Demo_20250808_0830\\Sineva.VHL\\Data\\Sineva.VHL.Data.Process\\TransferCommand.cs",
+              "RelativeToolTip": "Data\\Sineva.VHL.Data.Process\\TransferCommand.cs",
+              "ViewState": "AgIAAM4DAAAAAAAAAAAYwOMDAABpAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-04T10:26:01.418Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
