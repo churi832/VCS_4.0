@@ -611,8 +611,8 @@ namespace Sineva.VHL.Task
                         // Slide & Rotate Port Teaching Position Move
                         if (!m_MoveComp1)
                         {
-                            if (SetupManager.Instance.SetupOperation.SyncActionOfSlideAndRotate)
-                                rv1 = m_devFoupGripper.Move(enAxisMask.aYT, m_Target1Position, m_Target1VelSets);
+                            if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
+                                rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aYT, m_Target1Position, m_Target1VelSets);
                             else
                                 rv1 = m_devFoupGripper.Move(enAxisMask.aY | enAxisMask.aT, m_Target1Position, m_Target1VelSets);
 
@@ -735,12 +735,19 @@ namespace Sineva.VHL.Task
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Continuous Hoist Slow Move Start!", m_devFoupGripper.AxisHoist.AxisName));
                                 SequenceLog.WriteLog(FuncName, $"Pos : {m_devFoupGripper.AxisHoist.GetDevAxis().GetCurPosition()}, Target : {m_Target1Position.Z}, Diff : {Math.Abs(m_devFoupGripper.AxisHoist.GetDevAxis().GetCurPosition() - m_Target1Position.Z)}" +
                                     $"Vel : {m_devFoupGripper.AxisHoist.GetDevAxis().GetCommandVelocity()}, SetVel : {set.Vel}");
+                                double limit = ohb ? SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitOHB : SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitPort;
+                                m_Target2Position.Z += limit;
                                 m_MoveComp2 = true;
                                 seqNo = 130;
                             }
                         }
                         else if (m_MoveComp1)
                         {
+                            if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
+                            {
+                                double limit = ohb ? SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitOHB : SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitPort;
+                                m_Target2Position.Z += limit;
+                            }
                             m_MoveComp1 = false;
                             SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Before Down Move OK", m_devFoupGripper.AxisHoist.AxisName));
 
@@ -772,7 +779,7 @@ namespace Sineva.VHL.Task
                         bool up_sensor_interlock = cur_position > (m_BeforeUpSensorDetectPosition + up_limit) && m_devGripperPio.IsHoistUp(); //Before Down 보다 높은 위치에서 UP 감지
                         if (AppConfig.Instance.Simulation.MY_DEBUG)
                         {
-                            int ntest = new Random().Next(0, 5);
+                            int ntest = new Random().Next(3, 8);
                             if (Math.Abs(cur_position - m_Target2Position.Z) < ntest)
                             {
                                 m_devGripperPio.DiHoistHome.SetDi(true);
@@ -842,6 +849,7 @@ namespace Sineva.VHL.Task
                             {
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Up Detect#1 ({1}), Continuous Motion. Check Exact Position", m_devFoupGripper.AxisHoist.AxisName, cur_position));
                                 StartTicks = XFunc.GetTickCount();
+                                m_MoveComp2 = true;
                                 seqNo = 215;
                             }
                             else
@@ -1270,9 +1278,14 @@ namespace Sineva.VHL.Task
                 case 215:
                     {
                         double cur_position = m_devFoupGripper.AxisHoist.GetDevAxis().GetCurPosition();
-                        if ((m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance) > cur_position)
+                        if (cur_position < m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance)
                         {
                             SequenceLog.WriteLog(FuncName, $"Foup Gripper Unit ({m_devFoupGripper.AxisHoist.AxisName}) sensor detect Move after Up Detect. curPos:{cur_position}, Check Pos : {m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance} Continuous Motion.");
+                            seqNo = 220;
+                        }
+                        else if (XFunc.GetTickCount() - StartTicks > 1000)
+                        {
+                            SequenceLog.WriteLog(FuncName, $"Foup Gripper Unit ({m_devFoupGripper.AxisHoist.AxisName}) Detect move after sensor detect. detected late. curPos:{cur_position}, Check Pos : {m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance} Continuous Motion.");
                             seqNo = 220;
                         }
                     }
@@ -1978,17 +1991,11 @@ namespace Sineva.VHL.Task
                         {
                             if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
                             {
-                                if (SetupManager.Instance.SetupOperation.SyncActionOfSlideAndRotate)
-                                    rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aYT, m_WaitPosition, m_Target2VelSets);
-                                else
-                                    rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aY | enAxisMask.aT, m_WaitPosition, m_Target2VelSets);
+                                rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aYT, m_WaitPosition, m_Target2VelSets);
                             }
                             else
                             {
-                                if (SetupManager.Instance.SetupOperation.SyncActionOfSlideAndRotate)
-                                    rv1 = m_devFoupGripper.Move(enAxisMask.aYT, m_WaitPosition, m_Target2VelSets);
-                                else
-                                    rv1 = m_devFoupGripper.Move(enAxisMask.aY | enAxisMask.aT, m_WaitPosition, m_Target2VelSets);
+                                rv1 = m_devFoupGripper.Move(enAxisMask.aY | enAxisMask.aT, m_WaitPosition, m_Target2VelSets);
                             }
 
                             if (rv1 == 0) m_MoveComp1 = true;
@@ -3446,8 +3453,8 @@ namespace Sineva.VHL.Task
                         // Slide & Rotate Port Teaching Position Move
                         if (!m_MoveComp1)
                         {
-                            if (SetupManager.Instance.SetupOperation.SyncActionOfSlideAndRotate)
-                                rv1 = m_devFoupGripper.Move(enAxisMask.aYT, m_Target1Position, m_Target1VelSets);
+                            if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
+                                rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aYT, m_Target1Position, m_Target1VelSets);
                             else
                                 rv1 = m_devFoupGripper.Move(enAxisMask.aY | enAxisMask.aT, m_Target1Position, m_Target1VelSets);
 
@@ -3505,12 +3512,12 @@ namespace Sineva.VHL.Task
                                 rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aZ, m_Target1Position, m_Target1VelSets);
                             }
                             else
-                            { 
+                            {
                                 rv1 = m_devFoupGripper.Move(enAxisMask.aZ, m_Target1Position, m_Target1VelSets);
                             }
                             if (rv1 == 0) m_MoveComp1 = true;
                         }
-                        
+
                         if (m_devGripperPio.IsHoistLimit() || m_devGripperPio.IsHoistUp())
                         {
                             if (m_devGripperPio.IsHoistLimit()) m_LimitSensorDetectNg = true;
@@ -3581,11 +3588,18 @@ namespace Sineva.VHL.Task
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Continuous Hoist Slow Move Start!", m_devFoupGripper.AxisHoist.AxisName));
                                 SequenceLog.WriteLog(FuncName, $"Pos : {m_devFoupGripper.AxisHoist.GetDevAxis().GetCurPosition()}, Target : {m_Target1Position.Z}, Diff : {Math.Abs(m_devFoupGripper.AxisHoist.GetDevAxis().GetCurPosition() - m_Target1Position.Z)}" +
                                     $"Vel : {m_devFoupGripper.AxisHoist.GetDevAxis().GetCommandVelocity()}, SetVel : {set.Vel}");
+                                double limit = ohb ? SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitOHB : SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitPort;
+                                m_Target2Position.Z += limit;
                                 seqNo = 130;
                             }
                         }
                         else if (m_MoveComp1)
                         {
+                            if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
+                            {
+                                double limit = ohb ? SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitOHB : SetupManager.Instance.SetupHoist.HoistSensorDetectDownRangeLimitPort;
+                                m_Target2Position.Z += limit;
+                            }
                             m_MoveComp1 = false;
                             SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Before Down Move OK", m_devFoupGripper.AxisHoist.AxisName));
                             seqNo = 130;
@@ -3616,7 +3630,7 @@ namespace Sineva.VHL.Task
                         bool up_sensor_interlock = cur_position > (m_BeforeUpSensorDetectPosition + up_limit) && m_devGripperPio.IsHoistUp(); //Before Down 보다 높은 위치에서 UP 감지
                         if (AppConfig.Instance.Simulation.MY_DEBUG)
                         {
-                            int ntest = new Random().Next(0, 5);
+                            int ntest = new Random().Next(3, 8);
                             if (Math.Abs(cur_position - m_Target2Position.Z) < ntest)
                             {
                                 m_devGripperPio.DiHoistHome.SetDi(true);
@@ -3688,6 +3702,7 @@ namespace Sineva.VHL.Task
                             {
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Up Detect#1 ({1}), Continuous Motion. Check Exact Position", m_devFoupGripper.AxisHoist.AxisName, cur_position));
                                 StartTicks = XFunc.GetTickCount();
+                                m_MoveComp2 = true;
                                 seqNo = 215;
                             }
                             else
@@ -4104,9 +4119,14 @@ namespace Sineva.VHL.Task
                 case 215:
                     {
                         double cur_position = m_devFoupGripper.AxisHoist.GetDevAxis().GetCurPosition();
-                        if ((m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance) > cur_position)
+                        if (cur_position < m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance)
                         {
                             SequenceLog.WriteLog(FuncName, $"Foup Gripper Unit ({m_devFoupGripper.AxisHoist.AxisName}) sensor detect Move after Up Detect. curPos:{cur_position}, Check Pos : {m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance} Continuous Motion.");
+                            seqNo = 220;
+                        }
+                        else if (XFunc.GetTickCount() - StartTicks > 1000)
+                        {
+                            SequenceLog.WriteLog(FuncName, $"Foup Gripper Unit ({m_devFoupGripper.AxisHoist.AxisName}) Detect move after sensor detect. detected late. curPos:{cur_position}, Check Pos : {m_UpSensorDetectPosition + SetupManager.Instance.SetupHoist.HoistSensorDetectMoveDistance} Continuous Motion.");
                             seqNo = 220;
                         }
                     }
@@ -4716,17 +4736,11 @@ namespace Sineva.VHL.Task
                         {
                             if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
                             {
-                                if (SetupManager.Instance.SetupOperation.SyncActionOfSlideAndRotate)
-                                    rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aYT, m_WaitPosition, m_Target2VelSets);
-                                else
-                                    rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aY | enAxisMask.aT, m_WaitPosition, m_Target2VelSets);
+                                rv1 = m_devFoupGripper.ContinuousMove(enAxisMask.aYT, m_WaitPosition, m_Target2VelSets);
                             }
                             else
                             {
-                                if (SetupManager.Instance.SetupOperation.SyncActionOfSlideAndRotate)
-                                    rv1 = m_devFoupGripper.Move(enAxisMask.aYT, m_WaitPosition, m_Target2VelSets);
-                                else
-                                    rv1 = m_devFoupGripper.Move(enAxisMask.aY | enAxisMask.aT, m_WaitPosition, m_Target2VelSets);
+                                rv1 = m_devFoupGripper.Move(enAxisMask.aY | enAxisMask.aT, m_WaitPosition, m_Target2VelSets);
                             }
 
                             if (rv1 == 0) m_MoveComp1 = true;
@@ -6589,7 +6603,11 @@ namespace Sineva.VHL.Task
                             if (m_motion_complete)
                             {
                                 m_motion_complete = false;
-                                SequenceLog.WriteLog($"Ealry Motion Complete!"); 
+                                if (isOHB)
+                                    SequenceLog.WriteLog($"Ealry Motion Complete! Port ID = {portInfo.PortID}, isOHB = {isOHB}, Rotate Taget Pos = {m_TargetPosition.T}, Cur Pos = {m_devFoupGripper.AxisTurn.GetDevAxis().GetCurPosition()}");
+                                else
+                                    SequenceLog.WriteLog($"Ealry Motion Complete! Port ID = {portInfo.PortID}, isOHB = {isOHB}, Rotate Taget Pos = {m_TargetPosition.T}, Cur Pos = {m_devFoupGripper.AxisTurn.GetDevAxis().GetCurPosition()}, " +
+                                        $"Slide Taget Pos = {m_TargetPosition.Y}, Cur Pos = {m_devFoupGripper.AxisSlide.GetDevAxis().GetCurPosition()}");
                             }
                         }
                     }

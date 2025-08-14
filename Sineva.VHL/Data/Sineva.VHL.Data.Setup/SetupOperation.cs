@@ -17,8 +17,6 @@ namespace Sineva.VHL.Data.Setup
         private Use m_AutoDoor1Use = Use.Use;
         private Use m_AutoDoor2Use = Use.Use;
         private Use m_OutRiggerUse = Use.Use;
-        private bool m_SyncActionOfSlideAndRotate = false;
-        private bool m_SyncActionOfWheelAndAntiDrop = false;
         private double m_LinkSearchRange = 400.0f;
         private double m_LinkSearchDiffRange = 200.0f;
         private double m_AutoDoor1CheckStartDistance = 8000.0f;
@@ -31,7 +29,7 @@ namespace Sineva.VHL.Data.Setup
         private int m_SilentStopWaitTime = 5;
         private Use m_Early_Motion_Use = Use.NoUse;
         private Use m_Continuous_Motion_Use = Use.NoUse;
-        private double m_Early_Motion_Range = 300.0f;
+        private double m_Early_Motion_Range = 500.0f;
         #endregion
 
         #region Properties
@@ -64,12 +62,6 @@ namespace Sineva.VHL.Data.Setup
         {
             get { return m_OutRiggerUse; }
             set { m_OutRiggerUse = value; }
-        }
-        [Category("SyncAction"), DisplayName("Sync Action Of Slide & Rotate")]
-        public bool SyncActionOfSlideAndRotate 
-        {
-            get { return m_SyncActionOfSlideAndRotate; }
-            set { m_SyncActionOfSlideAndRotate = value; }
         }
         [Category("LinkSearch"), DisplayName("Similar Bcr Find Range")]
         public double LinkSearchRange 

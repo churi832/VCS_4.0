@@ -2358,7 +2358,7 @@ namespace Sineva.VHL.Device.ServoControl
             /// <param name="safty_check"></param>
             /// <param name="moving"></param>
             /// <returns></returns>
-            public int Do(double pos, VelSet set, bool safty_check = true)
+            public int Do(double pos, VelSet set, bool safty_check = true, bool moving = false)
             {
                 int rv = -1;
                 int seqNo = this.SeqNo;
@@ -2431,7 +2431,7 @@ namespace Sineva.VHL.Device.ServoControl
                     case 10:
                         {
                             //이때는 무조건 Ready 상태여야 한다.
-                            if (m_Device.IsAxisReady(false))
+                            if (m_Device.IsAxisReady(false, moving))
                             {
                                 //Axis Move
                                 if (set.Vel > m_Axis.SpeedLimit) set.Vel = m_Axis.SpeedLimit;

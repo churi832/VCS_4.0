@@ -464,20 +464,24 @@ namespace Sineva.VHL.Task
                             {
                                 bool last_toNode = false;
                                 strLog += string.Format("Received JC_Number-{0}, ", jp);
+                                
                                 int index0 = m_CurTransferCommand.PathMaps.FindIndex(x => x.ToNodeID == jp && x.JcsPermit == false);
                                 int index1 = -1;
+                                
                                 if (index0 >= 0)
                                 {
                                     //명령생성이 되어있을 때 내 앞에 있는거를 확인할것이다..
                                     int find_index = m_CurTransferCommand.PathMaps.FindIndex(x => x.ToNodeID == jp && (x.MotionProc == enMotionProc.inProc || x.MotionProc == enMotionProc.wait));
                                     if (find_index == -1)
                                     {
-                                        //합류구간이라 명령생성이 되지않았다.. 
-                                        int last_index = m_CurTransferCommand.RunPathMaps.Last().Index;
-                                        find_index = m_CurTransferCommand.PathMaps.FindIndex(x => x.ToNodeID == jp && x.JcsPermit == false && x.Index == last_index + 1);
+                                        //명령이 등록되지않은거면 loop Case만 제외하자..
+                                        int last_index = m_CurTransferCommand.PathMaps.Last().Index;
+                                        find_index = m_CurTransferCommand.PathMaps.FindIndex(x => x.ToNodeID == jp && x.JcsPermit == false && x.Index != last_index);
                                     }
                                     if (find_index != -1)
                                     {
+                                        strLog += $"Find JCS Index. index0 : {index0}, jp : {jp}";
+
                                         for (int i = 0; i <= find_index; i++)
                                             m_CurTransferCommand.PathMaps[i].JcsPermit = true;
                                     }

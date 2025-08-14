@@ -1647,19 +1647,22 @@ namespace Sineva.VHL.Task
                             }
                             abort_run |= AlarmCurrentProvider.Instance.IsHeavyAlarm();
 
-                            if (abort_run)
-                            {
-                                seqNo = 20;
-                            }
-                            else if (GV.RouteChangeOk && AlarmCurrentProvider.Instance.IsHeavyAlarm() == false)
+                            if (GV.RouteChangeOk && AlarmCurrentProvider.Instance.IsHeavyAlarm() == false)
                             {
                                 GV.RouteChangeOk = false;
                                 SequenceOCSLog.WriteLog(FuncName, "Vehicle already proceeded with Route Change."); //Vehicle Move에서 이미 Route Change를 위해 Case 30으로 돌아 갔다..
                                 seqNo = 0;
                             }
+                            else if (abort_run)
+                            {
+                                GV.RouteChangeOk = false;
+                                SequenceOCSLog.WriteLog(FuncName, "Abort Run Start");
+                                seqNo = 20;
+                            }
                             else if (GV.scmAbortSeqRun.Ing)
                             {
                                 SequenceOCSLog.WriteLog(FuncName, "Operator Manual Abort Start");
+                                GV.RouteChangeOk = false;
                                 m_ManualOperation = true;
                                 StartTicks = XFunc.GetTickCount();
                                 seqNo = 110;
@@ -2186,8 +2189,6 @@ namespace Sineva.VHL.Task
                             {
                                 // HJYOU OCS->VHL RouteChange는 미사용.
                                 // 주기적으로 물어보니까 불필요할 것 같다..
-                                
-
                                 TransferCommand curTransferCommand = ProcessDataHandler.Instance.CurTransferCommand;
                                 VehicleStatus curVehicleStatus = ProcessDataHandler.Instance.CurVehicleStatus;
 
