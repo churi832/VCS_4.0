@@ -951,7 +951,7 @@ namespace Sineva.VHL.Task
                         if (XFunc.GetTickCount() - StartTicks > 5000)
                         {
                             m_PermitRetry++;
-                            if (m_PermitRetry > 18 && AlarmId == 0) // 5 * 18 = 1분 30초
+                            if (m_PermitRetry > SetupManager.Instance.SetupJCS.PermitRetryCount && AlarmId == 0) // 5 * 18 = 1분 30초
                             {
                                 SequenceJCSLog.WriteLog(FuncName, string.Format("JCS PassPermit Wait Set Warning"));
                                 AlarmId = m_ALM_JCSPermitWait.ID;
@@ -997,7 +997,7 @@ namespace Sineva.VHL.Task
                             SequenceJCSLog.WriteLog(FuncName, string.Format("JCS PassPermit TimeOver, Retry !"));
 
                             m_PermitRetry++;
-                            if (m_PermitRetry > 18 && AlarmId == 0) // 5 * 18 = 1분 30초
+                            if (m_PermitRetry > SetupManager.Instance.SetupJCS.PermitRetryCount && AlarmId == 0) // 5 * 18 = 1분 30초
                             {
                                 SequenceJCSLog.WriteLog(FuncName, string.Format("JCS PassPermit Wait Set Warning"));
                                 AlarmId = m_ALM_JCSPermitWait.ID;

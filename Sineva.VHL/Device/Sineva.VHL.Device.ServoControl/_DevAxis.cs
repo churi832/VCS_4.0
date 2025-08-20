@@ -2409,7 +2409,6 @@ namespace Sineva.VHL.Device.ServoControl
                                     ServoLog.WriteLog(string.Format("{0}.{1} Safty Check OK[Target={2}]", m_Servo.ServoName, m_Axis.AxisName, pos));
                                     StartTicks = XFunc.GetTickCount();
                                     m_RetryCount = 0;
-
                                     seqNo = 10;
                                 }
                                 else

@@ -18,6 +18,7 @@ namespace Sineva.VHL.Data.Setup
         private int m_MessageRepayTimeOut = 60000;
         private int m_StatusReportIntervalTime = 200;
         private int m_NetworkRestartFailCount = 5;
+        private int m_PermitRetryCount = 18;
         #endregion
 
         #region Properties
@@ -61,6 +62,12 @@ namespace Sineva.VHL.Data.Setup
         {
             get { return m_NetworkRestartFailCount; }
             set { m_NetworkRestartFailCount = value; }
+        }
+        [Category("JCS"), DisplayName("Permit Retry Count(Alarm Occurred)")]
+        public int PermitRetryCount
+        {
+            get { return m_PermitRetryCount; }
+            set { m_PermitRetryCount = value; }
         }
         #endregion
 
