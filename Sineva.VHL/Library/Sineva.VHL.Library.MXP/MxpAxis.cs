@@ -48,6 +48,8 @@ namespace Sineva.VHL.Library.MXP
         private bool m_InRangeChecking = false;
         private bool m_ExternalEncoderAbort = false;
 
+        private bool m_AbsMoving = false;
+
         private UInt16 m_axisAlarmCount = 0;
         private UInt16 m_driveAlarmCount = 0;
         private UInt16[] m_arrAxisAlarmHistory = new UInt16[10];
@@ -97,6 +99,7 @@ namespace Sineva.VHL.Library.MXP
             (m_Axis as MpAxis).TorqueLimitBit = false;
             (m_Axis as MpAxis).SequenceMoveCommandSet = false;
             m_SequenceMoving = false;
+            m_AbsMoving = false;
         }
         public bool GetHomeEnd()
         {
@@ -658,6 +661,7 @@ namespace Sineva.VHL.Library.MXP
                     if (override_reset) m_OverrideStop = false;
                     if (inrange_reset) m_InRangeError = false;
                     m_InRangeChecking = false;
+                    m_AbsMoving = false;
                 }
             }
             catch (Exception ex)
@@ -720,6 +724,7 @@ namespace Sineva.VHL.Library.MXP
                     m_OverrideStop = false;
                     m_InRangeError = false;
                     m_InRangeChecking = false;
+                    m_AbsMoving = false;
                     (m_Axis as MpAxis).SequenceMoveCommandSet = false;
 
                     rv = MXP.AX_Reset((uint)m_Axis.NodeId);                    
@@ -1000,6 +1005,7 @@ namespace Sineva.VHL.Library.MXP
             {
                 if (m_Axis != null && m_AxisBlock.Connected && !m_Axis.CommandSkip)
                 {
+                    m_AbsMoving = false;
                     //(m_Axis as MpAxis).TorqueLimitBit = true;
                     /////////////////////////////////////////////////////////////////////////////////////
                     Single targetvel = (Single)m_AxisBlock.GetJogSpeed(m_Axis.AxisId);
@@ -1412,6 +1418,7 @@ namespace Sineva.VHL.Library.MXP
                     stop_condition |= m_CollisionDistance < s0 + stop_distance;
                     //stop_condition &= current_override > 0.0f;
                     stop_condition &= current_velocity > 1.0f;
+                    stop_condition &= !m_MxpAxis.m_AbsMoving;
                 }
                 stop_condition |= (m_Axis as MpAxis).HoldingBit;
                 stop_condition |= (m_Axis as MpAxis).PauseBit;
@@ -1464,12 +1471,12 @@ namespace Sineva.VHL.Library.MXP
 
                             bool override_change = true;
                             override_change &= target_override != m_MxpAxis.m_OverrideRate;
-                            override_change &= target_override != 0.0f;
+                            override_change &= target_override > 0.001f;
                             override_change |= recovery;
 
                             if (target_velocity > max_link_velocity && max_link_velocity < 1000.0f) // Curve일때만 적용하자~~~
                             {
-                                override_change |= target_velocity > 1.1f * max_link_velocity;// 비정상 속도 적용되는 경우
+                                override_change |= target_velocity > 1.2f * max_link_velocity;// 비정상 속도 적용되는 경우
                             }
 
                             if (stop_condition)
@@ -1485,7 +1492,7 @@ namespace Sineva.VHL.Library.MXP
                                     if (rv == MXP.MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR)
                                     {
                                         string msg = string.Format("{0} Velocity Override Stop SET : \r\n", m_Axis.AxisName);
-                                        msg += string.Format("Target Override={0}\r\n", Math.Round(target_override, 4));
+                                        msg += string.Format("Target Override={0}\r\n", target_override);
                                         msg += string.Format("Current Override={0}\r\n", Math.Round(current_override, 4));
                                         msg += string.Format("Decceleration={0}\r\n", deceleration);
                                         msg += string.Format("Override Set Time={0}\r\n", dt0 * 1000.0f);
@@ -1493,6 +1500,11 @@ namespace Sineva.VHL.Library.MXP
                                         msg += string.Format("Decceleration Distance={0}\r\n", s0);
                                         msg += string.Format("stop_distance={0}\r\n", stop_distance);
                                         msg += string.Format("current_velocity={0}\r\n", current_velocity);
+                                        msg += string.Format("max_distance={0}\r\n", Math.Round(max_distance, 4));
+                                        msg += string.Format("sensor_state={0}\r\n", sensor_state);
+                                        msg += string.Format("m_AbsMoving={0}\r\n", m_MxpAxis.m_AbsMoving);
+                                        msg += string.Format("HoldingBit={0}\r\n", (m_Axis as MpAxis).HoldingBit);
+                                        msg += string.Format("PauseBit={0}\r\n", (m_Axis as MpAxis).PauseBit);
                                         MxpCommLog.WriteLog(msg);
 
                                         m_OverrideTime = dt0 * 1000.0f;
@@ -1550,13 +1562,17 @@ namespace Sineva.VHL.Library.MXP
                                     set_override &= (m_Axis as MpAxis).HoldingBit == false;
                                     set_override &= (m_Axis as MpAxis).PauseBit == false;
                                 }
+                                else
+                                {
+                                    set_override &= target_override > 0.01f; // 여긴 증속하는 경우인데 멈추라고 하는 건 이상하다. 0인 경우는 stop_condition에서
+                                }
                                 if (set_override)
                                 {
                                     MXP.MXP_FUNCTION_STATUS_RESULT rv = m_MxpAxis.VelocityOverride(target_override, dt2 * 1000.0f);
                                     if (rv == MXP.MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR)
                                     {
                                         string msg = string.Format("{0} Velocity Override Change SET : \r\n", m_Axis.AxisName);
-                                        msg += string.Format("Target Override={0}\r\n", Math.Round(target_override, 4));
+                                        msg += string.Format("Target Override={0}\r\n", target_override);
                                         msg += string.Format("Current Override={0}\r\n", Math.Round(current_override, 4));
                                         msg += string.Format("Decceleration={0}\r\n", deceleration);
                                         msg += string.Format("Override Set Time={0}\r\n", dt2 * 1000.0f);
@@ -1564,6 +1580,11 @@ namespace Sineva.VHL.Library.MXP
                                         msg += string.Format("Decceleration Distance={0}\r\n", s0);
                                         msg += string.Format("stop_distance={0}\r\n", stop_distance);
                                         msg += string.Format("current_velocity={0}\r\n", current_velocity);
+                                        msg += string.Format("max_distance={0}\r\n", Math.Round(max_distance, 4));
+                                        msg += string.Format("sensor_state={0}\r\n", sensor_state);
+                                        msg += string.Format("m_AbsMoving={0}\r\n", m_MxpAxis.m_AbsMoving);
+                                        msg += string.Format("HoldingBit={0}\r\n", (m_Axis as MpAxis).HoldingBit);
+                                        msg += string.Format("PauseBit={0}\r\n", (m_Axis as MpAxis).PauseBit);
                                         MxpCommLog.WriteLog(msg);
 
                                         m_OverrideTime = dt2 * 1000.0f;
@@ -1598,7 +1619,7 @@ namespace Sineva.VHL.Library.MXP
 
                             bool override_change = true;
                             override_change &= Math.Abs(target_override - m_MxpAxis.m_OverrideRate) > 0.001f;
-                            override_change &= target_override != 0.0f;
+                            override_change &= target_override > 0.001f;
                             override_change &= XFunc.GetTickCount() - StartTicks > 0.5f * m_OverrideTime;
 
                             double collision_ng_distance = Math.Min(min_distance, limit_distance);
@@ -3271,6 +3292,7 @@ namespace Sineva.VHL.Library.MXP
                                     m_MxpAxis.m_OverrideStop = false;
                                     m_MxpAxis.m_InRangeError = false;
                                     m_MxpAxis.m_InRangeChecking = false;
+                                    m_MxpAxis.m_AbsMoving = false;
                                     MxpCommLog.WriteLog(string.Format("{0} SequenceMove {1}", m_Axis.AxisName, m_MxpAxis.IsReady() ? "Ready State" : "NotReady State"));
                                     seqNo = 20;
                                 }
@@ -3523,10 +3545,10 @@ namespace Sineva.VHL.Library.MXP
 
                 
                 double jerkTimeRatio = 0.3f;
-                if ((m_Axis as MpAxis).CommandSpeed >= 2000) jerkTimeRatio = 0.5f;
-                if ((m_Axis as MpAxis).CommandSpeed >= 1000) jerkTimeRatio = 0.4f;
-                if ((m_Axis as MpAxis).CommandSpeed >= 500) jerkTimeRatio = 0.3f;
-                else jerkTimeRatio = 0.25f;
+                if ((m_Axis as MpAxis).CommandSpeed >= 2000) jerkTimeRatio = 0.6f;
+                if ((m_Axis as MpAxis).CommandSpeed >= 1000) jerkTimeRatio = 0.5f;
+                if ((m_Axis as MpAxis).CommandSpeed >= 500) jerkTimeRatio = 0.4f;
+                else jerkTimeRatio = 0.3f;
 
                 int seqNo = this.SeqNo;
                 switch (seqNo)
@@ -3541,6 +3563,13 @@ namespace Sineva.VHL.Library.MXP
                             double targetdec = m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorScanDeceleration;
                             double targetjerk = m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorScanJerk;
 
+                            if (m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorUse == 0)
+                            {
+                                targetacc = m_Axis.AccDefault;
+                                targetdec = m_Axis.DecDefault;
+                                targetjerk = m_Axis.JerkDefault;
+                            }
+
                             double deceleration_time = jerkTimeRatio + (m_Axis as MpAxis).CommandSpeed / targetdec;
                             double deceleration_distance = 0.5f * targetdec * deceleration_time * deceleration_time;
 
@@ -3552,6 +3581,8 @@ namespace Sineva.VHL.Library.MXP
                             near_check |= sensor_remain_distance < deceleration_distance; // BCR로 근처에 왔는데 지금 정지거리보다 짧아 그럼 멈춰야해
                             near_check |= remain_motor_distance < 1.5f * m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorScanDistance ? true : false; // 근처에 왔구나 ~~~
                             near_check |= remain_motor_distance < m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorScanDistance + following_error;
+                            near_check |= remain_motor_distance < (m_Axis as MpAxis).CommandSpeed;
+
                             bool run_condition = true;
                             run_condition &= m_MxpAxis.m_SequenceMoving ? true : false;
                             run_condition &= m_MxpAxis.m_ExternalEncoderAbort ? false : true;
@@ -3785,6 +3816,7 @@ namespace Sineva.VHL.Library.MXP
                                         /////////////////////////////////////////////////////////////////////////////////////
                                         if (rv == MXP.MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR)
                                         {
+                                            m_MxpAxis.m_AbsMoving = true;
                                             MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor AX_MoveAbsolute Move OK {1}", m_Axis.AxisName, rv.ToString()));
 
                                             m_Axis.TargetPos = targetpos; //이걸 Update 해줘야 ... 운영쪽에서도 이동 위치를 알거야...
@@ -3795,18 +3827,17 @@ namespace Sineva.VHL.Library.MXP
                                             m_Axis.TargetJerk = targetjerk;
                                             m_MxpAxis.m_OverrideRate = 1.0f; // MXP에서 1.0f으로 변경했음.
 
-                                            seqNo = 15;
-                                            //if (m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorUse == 1)
-                                            //{
-                                            //    rv = m_MxpAxis.SetExternalExcorder(targetpos);
-                                            //}
-                                            //if (rv == MXP.MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR)
-                                            //{
-                                            //    if (m_Axis.SequenceState.IsExternalEncoderRun == false && targetvel > 300.0f) m_OneMoreMoveStart = true;
-                                            //    m_MxpAxis.m_ProfileMoveMonitoringInit = false;                                                
-                                            //    StartTicks = XFunc.GetTickCount();
-                                            //    seqNo = 20;
-                                            //}
+                                            if (m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorUse == 1)
+                                            {
+                                                rv = m_MxpAxis.SetExternalExcorder(targetpos);
+                                            }
+                                            if (rv == MXP.MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR)
+                                            {
+                                                if (m_Axis.SequenceState.IsExternalEncoderRun == false && targetvel > 300.0f && commandVel > 0.0f) m_OneMoreMoveStart = true;
+                                                m_MxpAxis.m_ProfileMoveMonitoringInit = false;                                                
+                                                StartTicks = XFunc.GetTickCount();
+                                                seqNo = 20;
+                                            }
                                         }
                                         else
                                         {
@@ -3826,61 +3857,7 @@ namespace Sineva.VHL.Library.MXP
                             }
                         }
                         break;
-                    case 15:
-                        {
-                            m_MxpAxis.CheckMoveState();
-                            bool cancel = false;
-                            cancel |= m_MxpAxis.MoveState == MXP_MOVESTATE.MOVESTATE_ABORT ? true : false;
-                            cancel |= m_MxpAxis.MoveState == MXP_MOVESTATE.MOVESTATE_NULL ? true : false;
-                            cancel &= Convert.ToBoolean(m_Axis.AxisStatus & enAxisInFlag.Busy) ? false : true;
 
-                            double remain_motor_distance = m_Axis.TargetPos - m_Axis.CurPos;
-                            uint slave_no = (uint)m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SlaveNo;
-                            double curBCR = slave_no == m_Axis.LeftBcrNodeId ? m_Axis.LeftBcrPos : m_Axis.RightBcrPos;
-                            double remain_bcr_distance = m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorTargetValue - curBCR;
-
-                            bool externalEncoder_Enable = true;
-                            //200mm 아래로는 정위치 정지를 내보내도 곡선에서 나와있겠지..
-                            externalEncoder_Enable |= remain_motor_distance < 200.0f;
-                            externalEncoder_Enable |= remain_bcr_distance < 200.0f;
-
-                            externalEncoder_Enable &= m_MxpAxis.m_SequenceMoving;
-                            externalEncoder_Enable &= (m_Axis as MpAxis).OverrideCollisionDistance > 300.0f;
-
-                            if (externalEncoder_Enable)
-                            {
-                                MXP.MXP_FUNCTION_STATUS_RESULT rv = MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR;
-
-                                if (m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorUse == 1)
-                                {
-                                    rv = m_MxpAxis.SetExternalExcorder(m_Axis.TargetPos);
-                                    MxpCommLog.WriteLog(string.Format("{0} Near Distance SetExternalExcorder On {1}", m_Axis.AxisName, rv.ToString()));
-                                }
-                                if (rv == MXP.MXP_FUNCTION_STATUS_RESULT.RT_NO_ERROR)
-                                {
-                                    if (m_Axis.SequenceState.IsExternalEncoderRun == false && m_Axis.TargetSpeed > 300.0f) m_OneMoreMoveStart = true;
-                                    m_MxpAxis.m_ProfileMoveMonitoringInit = false;
-                                    StartTicks = XFunc.GetTickCount();
-                                    seqNo = 20;
-                                }
-                            }
-                            else if(m_MxpAxis.IsAlarm() || m_MxpAxis.MoveState == MXP_MOVESTATE.MOVESTATE_FAIL)
-                            {
-                                if (m_MxpAxis.MoveState == MXP_MOVESTATE.MOVESTATE_FAIL)
-                                    MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor State Fail", m_Axis.AxisName));
-                                else MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor NG - Mxp Alarm [mxp={1} driver={2}]", m_Axis.AxisName, string.Join("-", (m_Axis as MpAxis).ControllerAlarmIdList), string.Join("-", (m_Axis as MpAxis).DriverAlarmIdList)));
-                                StartTicks = XFunc.GetTickCount();
-                                seqNo = 90;
-                            }
-                            else if (XFunc.GetTickCount() - StartTicks > 3000 || cancel)
-                            {
-                                if (cancel) MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor State Abort", m_Axis.AxisName));
-                                else MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor NG - Not Response 1(sec)", m_Axis.AxisName)); //뭔가 이상하네... 처음으로 돌아가자... 상위에서 알람을 띄울거임.
-                                StartTicks = XFunc.GetTickCount();
-                                seqNo = 90;
-                            }
-                        }
-                        break;
                     case 20:
                         {
                             m_MxpAxis.CheckMoveState();
@@ -3951,9 +3928,13 @@ namespace Sineva.VHL.Library.MXP
                             abs_move_retry &= motor_remain > 10;
                             abs_move_retry &= motor_remain < 30.0f || m_Axis.CurSpeed < 100.0f;
                             abs_move_retry &= (m_Axis as MpAxis).SequenceMoveCommandSet == false;
+                            bool abs_abnormal_stop = m_Axis.SequenceState.IsExternalEncoderRun == false ? true : false;
+                            abs_abnormal_stop |= motor_remain < 0.0f; //Target 위치를 지나친 경우
 
                             if (m_MxpAxis.m_ProfileMoveMonitoringInit)
                             {
+                                m_MxpAxis.m_AbsMoving = false;
+                                m_MxpAxis.m_InRangeChecking = false;
                                 m_MxpAxis.m_ProfileMoveMonitoringInit = false;
                                 // 잔여 거리 계산
                                 uint slave_no = (uint)m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SlaveNo; // 9, 10 번
@@ -3991,6 +3972,11 @@ namespace Sineva.VHL.Library.MXP
                                 MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor One More Move Start", m_Axis.AxisName));
                                 seqNo = 200;
                             }
+                            else if (abs_abnormal_stop)
+                            {
+                                MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor Target Position Overrun, RemainDistance={1}", m_Axis.AxisName, motor_remain));
+                                seqNo = 100;
+                            }
                             else if (complete)
                             {
                                 uint slave_no = (uint)m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SlaveNo; // 9, 10 번
@@ -4026,6 +4012,7 @@ namespace Sineva.VHL.Library.MXP
                                     m_AccumulateVelocity += actual_velocity;
                                 if (m_AccumulateVelocity > 30000.0f && XFunc.GetTickCount() - m_CompleteTimeTick > 5000) // BCR Scan 시간을 5sec 주자... 계속 떨고 있다고 생각하자 ~~
                                 {
+                                    m_MxpAxis.m_AbsMoving = false;
                                     m_MxpAxis.m_InRangeChecking = false;
                                     m_MxpAxis.m_InRangeError = true;
                                     MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor InRange NG = {1}, Velocity Oscillation", m_Axis.AxisName, m_AccumulateVelocity));
@@ -4057,6 +4044,7 @@ namespace Sineva.VHL.Library.MXP
                             double remain_bcr_distance = m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorTargetValue - curBCR;
                             if (m_MxpAxis.m_ProfileMoveMonitoringInit)
                             {
+                                m_MxpAxis.m_AbsMoving = false;
                                 m_MxpAxis.m_InRangeChecking = false;
                                 m_MxpAxis.m_ProfileMoveMonitoringInit = false;
                                 MxpCommLog.WriteLog(string.Format("{0} New Command Sequence Monitor = {1}", m_Axis.AxisName, remain_bcr_distance));
@@ -4075,6 +4063,7 @@ namespace Sineva.VHL.Library.MXP
                             }
                             else if (XFunc.GetTickCount() - StartTicks > 10 * 1000.0f)
                             {
+                                m_MxpAxis.m_AbsMoving = false;
                                 m_MxpAxis.m_InRangeChecking = false;
                                 m_MxpAxis.m_InRangeError = true;
                                 MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor InRange NG = {1}", m_Axis.AxisName, remain_bcr_distance));
@@ -4091,6 +4080,7 @@ namespace Sineva.VHL.Library.MXP
                             double remain_bcr_distance = m_MxpAxis.m_SequenceCommand.PositionSensorInfo.SensorTargetValue - curBCR;
                             if (m_MxpAxis.m_ProfileMoveMonitoringInit)
                             {
+                                m_MxpAxis.m_AbsMoving = false;
                                 m_MxpAxis.m_InRangeChecking = false;
                                 m_MxpAxis.m_ProfileMoveMonitoringInit = false;
                                 MxpCommLog.WriteLog(string.Format("{0} New Command Sequence Monitor = {1}", m_Axis.AxisName, remain_bcr_distance));
@@ -4151,6 +4141,7 @@ namespace Sineva.VHL.Library.MXP
                                 m_MxpAxis.m_ProfileMoveMonitoringInit = false;
                                 MxpCommLog.WriteLog(string.Format("{0} New Command Sequence Monitor = {1}", m_Axis.AxisName, sensor_remain_distance));
                                 m_MxpAxis.m_InRangeChecking = false;
+                                m_MxpAxis.m_AbsMoving = false;
                                 StartTicks = XFunc.GetTickCount();
                                 seqNo = 0;
                             }
@@ -4159,6 +4150,7 @@ namespace Sineva.VHL.Library.MXP
                                 MXP.MXP_FUNCTION_STATUS_RESULT rv = m_MxpAxis.Stop(false, true, false);
                                 MxpCommLog.WriteLog(string.Format("{0} Sequence Monitor Busy ===> Stop", m_Axis.AxisName));
                                 m_MxpAxis.m_InRangeChecking = false;
+                                m_MxpAxis.m_AbsMoving = false;
                                 seqNo = 0;
                             }
                         }

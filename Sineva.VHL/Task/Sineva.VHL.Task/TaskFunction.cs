@@ -585,6 +585,9 @@ namespace Sineva.VHL.Task
                             SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit Move Start - DOWN1:[{0}], DOWN2:[{1}], Velocity:[{2}]", m_Target1Position.ToString(), m_Target2Position.ToString(), msg));
                             m_devFoupGripper.SeqAbort();
                             m_MoveComp1 = false;
+
+                            OCSCommManager.Instance.OcsStatus.SendVehicleEvent(VehicleEvent.AcquireStart);
+
                             seqNo = 110;
                         }
                         else
@@ -623,8 +626,6 @@ namespace Sineva.VHL.Task
                         {
                             if (Math.Abs(m_devFoupGripper.AxisSlide.GetDevAxis().GetCurPosition() - m_Target1Position.Y) < Math.Abs(m_Target1Position.Y * 0.1f) || m_MoveComp1)
                             {
-                                OCSCommManager.Instance.OcsStatus.SendVehicleEvent(VehicleEvent.AcquireStart);
-
                                 m_MoveComp1 = false;
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0} | {1}) Continuous_Motion_Use", m_devFoupGripper.AxisSlide.AxisName, m_devFoupGripper.AxisTurn.AxisName));
                                 seqNo = 120;
@@ -632,8 +633,6 @@ namespace Sineva.VHL.Task
                         }
                         if (m_MoveComp1)
                         {
-                            OCSCommManager.Instance.OcsStatus.SendVehicleEvent(VehicleEvent.AcquireStart);
-
                             m_MoveComp1 = false;
                             SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0} | {1}) Before Down Move OK", m_devFoupGripper.AxisSlide.AxisName, m_devFoupGripper.AxisTurn.AxisName));
                             if (SetupManager.Instance.SetupHoist.HoistTwoStepDown)
@@ -848,20 +847,20 @@ namespace Sineva.VHL.Task
                         {
                             m_MoveComp1 = false;
                             m_UpSensorDetectPosition = cur_position;
-                            if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
-                            {
-                                SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Up Detect#1 ({1}), Continuous Motion. Check Exact Position", m_devFoupGripper.AxisHoist.AxisName, cur_position));
-                                StartTicks = XFunc.GetTickCount();
-                                m_MoveComp2 = true;
-                                seqNo = 215;
-                            }
-                            else
-                            {
+                            //if (SetupManager.Instance.SetupOperation.Continuous_Motion_Use == Use.Use)
+                            //{
+                            //    SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Up Detect#1 ({1}), Continuous Motion. Check Exact Position", m_devFoupGripper.AxisHoist.AxisName, cur_position));
+                            //    StartTicks = XFunc.GetTickCount();
+                            //    m_MoveComp2 = true;
+                            //    seqNo = 215;
+                            //}
+                            //else
+                            //{
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0}) Up Detect#1 ({1})", m_devFoupGripper.AxisHoist.AxisName, cur_position));
                                 m_devFoupGripper.SeqAbort();
                                 m_StopRetry = 0;
                                 seqNo = 150;
-                            }
+                            //}
                         }
                         else if (m_MoveComp1)
                         {
@@ -3419,6 +3418,9 @@ namespace Sineva.VHL.Task
                             SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit Move Start - DOWN1:[{0}], DOWN2:[{1}], Velocity:[{2}]", m_Target1Position.ToString(), m_Target2Position.ToString(), msg));
                             m_devFoupGripper.SeqAbort();
                             m_MoveComp1 = false;
+
+                            OCSCommManager.Instance.OcsStatus.SendVehicleEvent(VehicleEvent.DepositStart);
+
                             seqNo = 110;
                         }
                         else
@@ -3457,8 +3459,6 @@ namespace Sineva.VHL.Task
                         {
                             if (Math.Abs(m_devFoupGripper.AxisSlide.GetDevAxis().GetCurPosition() - m_Target1Position.Y) < Math.Abs(m_Target1Position.Y * 0.05f) || m_MoveComp1)
                             {
-                                OCSCommManager.Instance.OcsStatus.SendVehicleEvent(VehicleEvent.DepositStart);
-
                                 m_MoveComp1 = false;
 
                                 SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0} | {1}) Continuous_Motion_Use", m_devFoupGripper.AxisSlide.AxisName, m_devFoupGripper.AxisTurn.AxisName));
@@ -3467,8 +3467,6 @@ namespace Sineva.VHL.Task
                         }
                         if (m_MoveComp1)
                         {
-                            OCSCommManager.Instance.OcsStatus.SendVehicleEvent(VehicleEvent.DepositStart);
-
                             m_MoveComp1 = false;
                             SequenceLog.WriteLog(FuncName, string.Format("Foup Gripper Unit ({0} | {1}) Before Down Move OK", m_devFoupGripper.AxisSlide.AxisName, m_devFoupGripper.AxisTurn.AxisName));
                             if (SetupManager.Instance.SetupHoist.HoistTwoStepDown)
@@ -5932,7 +5930,7 @@ namespace Sineva.VHL.Task
                         // AutoDoor는 굳이 확인할 필요 없다...!
                         if (TaskJCS.Instance.JcsControl.JcsRunning)
                         {
-                            TaskJCS.Instance.JcsControl.JcsRunning = false;
+                            //TaskJCS.Instance.JcsControl.JcsRunning = false;
                             SequenceLog.WriteLog(FuncName, "JCS Running Confirm");
                             seqNo = 200;
                         }

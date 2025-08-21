@@ -1389,8 +1389,9 @@ namespace Sineva.VHL.Device
                                 int lastLinkId = ProcessDataHandler.Instance.CurTransferCommand.RunPathMaps.Last().LinkID;
                                 int curLinkId = ProcessDataHandler.Instance.CurVehicleStatus.CurrentPath.LinkID;
                                 bool more_move = lastLinkId == curLinkId;
-                                more_move = diff > 0 && diff < ProcessDataHandler.Instance.CurTransferCommand.RunPathMaps.Last().RunDistance;
-                                more_move = diff > m_Device.GetInRange();
+                                //more_move &= diff > 0 && diff < ProcessDataHandler.Instance.CurTransferCommand.RunPathMaps.Last().RunDistance;
+                                more_move &= diff > 0 && diff < ProcessDataHandler.Instance.CurTransferCommand.RunPathMaps.Last().RemainDistanceOfLink;
+                                more_move &= diff > m_Device.GetInRange();
                                 if (more_move)
                                 {
                                     SequenceDeviceLog.WriteLog(string.Format("{0}.{1} Position Check NG [Target:{2},Cur:{3}, Diff:{4}]", m_Master.GetServoUnit().ServoName, m_Master.GetAxis().AxisName, m_Master.GetTargetPos(), m_Device.MotionRunPosition, diff));

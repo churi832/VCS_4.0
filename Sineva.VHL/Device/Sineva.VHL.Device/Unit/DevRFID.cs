@@ -4,6 +4,7 @@ using Sineva.VHL.Data.Setup;
 using Sineva.VHL.Device.Assem;
 using Sineva.VHL.Library;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.IO;
@@ -51,6 +52,7 @@ namespace Sineva.VHL.Device
         private AlarmData m_ALM_ConnectFailed;
         private AlarmData m_ALM_ReadTagTimeout;
         private int m_ReadCount = 0;
+        private List<byte> buffers = new List<byte>();
         #endregion
 
         #region Properties
@@ -247,7 +249,7 @@ namespace Sineva.VHL.Device
                 }
                 else
                 {
-                    m_Comm = new XComm();
+                    m_Comm.Initialize();
                     m_Comm.ReceivedData += new XComm.ReceivedDataEventHandler(ReceivedData);
                 }
 
@@ -364,17 +366,25 @@ namespace Sineva.VHL.Device
 
             byte[] readResult = new byte[m_Comm.SerialPort.BytesToRead];
             int r = m_Comm.Read(readResult, 0, readResult.Length);
-            if (r == 22 && readResult[0] == 0x55 && readResult[1] == 0xAA && readResult[5] == 0x00)
+            buffers.AddRange(readResult);
+            if (buffers.Count < 22)
+            {
+                return;
+            }
+            if (buffers.Count >= 22 && buffers[0] == 0x55 && buffers[1] == 0xAA && buffers[5] == 0x00)
             {
                 //m_RFIDTag = Encoding.ASCII.GetString(readResult, 6, 16).Trim();
-                m_RFIDTag = Encoding.ASCII.GetString(readResult, 6, 8).Trim();
+                m_RFIDTag = Encoding.ASCII.GetString(buffers.ToArray(), 6, 8).Trim();
                 m_DataReceivedOk = true;
+                EventHandlerManager.Instance.InvokeCarrierIDReadingConfirm(m_RFIDTag);
+
             }
             else
             {
                 m_RFIDTag = String.Empty;
                 m_DataReceivedFormatNg = true;
             }
+            buffers.Clear();
         }
         private void OnConnet(object sender, AsyncSocketConnectionEventArgs e)
         {
@@ -434,8 +444,14 @@ namespace Sineva.VHL.Device
                 m_RFIDTag = string.Empty;
                 m_DataReceivedOk = false;
                 m_DataReceivedFormatNg = false;
-
-                m_Client?.Send(readPacket);
+                if (m_Type != enRFIDCommType.TCP)
+                {
+                    m_Comm?.Write(readPacket, 0, readPacket.Length);
+                }
+                else
+                {
+                    m_Client?.Send(readPacket);
+                }
                 rv = true;
             }
             catch (Exception ex)
@@ -571,6 +587,7 @@ namespace Sineva.VHL.Device
                     EqpAlarm.Reset(AlarmId);
                     AlarmId = 0;
                 }
+                m_ReadRetryCount = 0;
                 this.InitSeq();
             }
             #endregion
@@ -589,14 +606,13 @@ namespace Sineva.VHL.Device
                         {
                             if (m_Device.RFIDReadStart)
                             {
-							    m_Device.ReadCount++;
-                                m_ReadRetryCount = 0;
-                                if (m_Device.Type != enRFIDCommType.TCP)
-                                {
-                                    m_Device.ResetFlag();
-                                    m_Device.RFIDConnectedNg = true;
-                                }
-                                else if (m_Device.IsConnected())
+                                m_Device.ReadCount++;
+                                //if (m_Device.Type != enRFIDCommType.TCP)
+                                //{
+                                //    m_Device.ResetFlag();
+                                //    m_Device.RFIDConnectedNg = true;
+                                //}
+                                if (m_Device.IsConnected())
                                 {
                                     m_Device.SendCommand();
                                     m_Device.RFIDReading = true;
@@ -610,6 +626,8 @@ namespace Sineva.VHL.Device
                                     m_Device.m_SeqMonitor.SeqAbort(); // 재연결 시도
                                     StartTicks = XFunc.GetTickCount();
                                     seqNo = 10;
+                                    m_ReadRetryCount = 0;
+
                                 }
                             }
                         }
@@ -656,6 +674,7 @@ namespace Sineva.VHL.Device
                                 m_Device.ResetFlag();
                                 SequenceDeviceLog.WriteLog(FuncName, "Reading OK", seqNo);
                                 m_Device.RFIDReadCompleted = true;
+                                m_ReadRetryCount = 0;
                                 seqNo = 0;
                                 rv = 0;
                             }

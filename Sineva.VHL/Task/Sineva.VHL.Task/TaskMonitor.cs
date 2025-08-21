@@ -745,7 +745,7 @@ namespace Sineva.VHL.Task
                                 m_Tpd[enTPD.CPS_BoostVoltage] = DevicesManager.Instance.DevCPS.BoostVoltage.ToString("F2");
                                 m_Tpd[enTPD.CPS_OutputVoltage] = DevicesManager.Instance.DevCPS.OutputVoltage.ToString("F2");
 
-                                //if (SetupManager.Instance.SetupOperation.NetworkControlUse == Use.Use)
+                                if (SetupManager.Instance.SetupOperation.NetworkControlUse == Use.Use)
                                 {
                                     m_Tpd[enTPD.NetSpeed] = NetworkManager.Instance.NetSpeed.ToString();
                                     m_Tpd[enTPD.PacketReceived] = NetworkManager.Instance.NetworkInformation.PacketReceived.ToString();
